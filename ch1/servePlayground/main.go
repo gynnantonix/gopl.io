@@ -18,6 +18,9 @@ import (
 	"math/rand"
 	"net/http"
 	"sync"
+	"os"
+	"strings"
+	"time"
 )
 
 var mu sync.Mutex
@@ -33,6 +36,7 @@ const (
 func main() {
 	http.HandleFunc("/echo", echo)
 	http.HandleFunc("/echo/count", echoCounter)
+	http.HandleFunc("/echo/timed", echoTimed)
 	http.HandleFunc("/lissajous", func(w http.ResponseWriter, r *http.Request) {
 		lissajous(w)
 	})
@@ -44,6 +48,15 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	mu.Lock()
 	count++
 	mu.Unlock()
+	fmt.Fprintf(w, "Invoked as %q", os.Args[0])
+	if (len(os.Args) > 1) {
+		fmt.Fprintf(w, " with arguments:\n")
+		for i, v := range os.Args[1:] {
+			fmt.Fprintf(w, "\tos.Args[%d]: %q\n", i, v)
+		}
+	} else {
+		fmt.Fprintf(w, "\n")
+	}
 	fmt.Fprintf(w, "%s %s %s\n", r.Method, r.URL, r.Proto)
 	for k, v := range r.Header {
 		fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
@@ -56,6 +69,39 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	for k, v := range r.Form {
 		fmt.Fprintf(w, "Form[%q] = %q\n", k, v)
 	}
+}
+
+func echojoin(w http.ResponseWriter, r *http.Request) {
+	mu.Lock()
+	count++
+	mu.Unlock()
+	fmt.Fprintf(w, "Invoked as %q", os.Args[0])
+	if (len(os.Args) > 1) {
+		fmt.Fprintf(w, " with arguments:\n")
+		fmt.Fprint(w, strings.Join(os.Args[1:], "\n"))
+	}
+	fmt.Fprintf(w, "\n")
+	fmt.Fprintf(w, "%s %s %s\n", r.Method, r.URL, r.Proto)
+	for k, v := range r.Header {
+		fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
+	}
+	fmt.Fprintf(w, "Host = %q\n", r.Host)
+	fmt.Fprintf(w, "RemoteAddr = %q\n", r.RemoteAddr)
+	if err := r.ParseForm(); err != nil {
+		log.Print(err)
+	}
+	for k, v := range r.Form {
+		fmt.Fprintf(w, "Form[%q] = %q\n", k, v)
+	}
+}
+
+
+func echoTimed(w http.ResponseWriter, r *http.Request) {
+	startTime := time.Now()
+	echo(w,r)
+	fmt.Fprintf(w, "echo with loop took %f seconds\n\n", time.Since(startTime).Seconds())
+	echojoin(w,r)
+	fmt.Fprintf(w, "echo with join took %f seconds\n\n", time.Since(startTime).Seconds())
 }
 
 // counter echoes the number of calls so far.
