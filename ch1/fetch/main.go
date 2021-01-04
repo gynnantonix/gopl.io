@@ -19,6 +19,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
 			panic(err)
 		}
+		fmt.Printf("%s\n", resp.Status)
 		count, err := io.Copy(os.Stdout, resp.Body)
 		resp.Body.Close()
 		if err != nil {
