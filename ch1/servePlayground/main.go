@@ -17,9 +17,9 @@ import (
 	"math"
 	"math/rand"
 	"net/http"
-	"sync"
 	"os"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -49,7 +49,7 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	count++
 	mu.Unlock()
 	fmt.Fprintf(w, "Invoked as %q", os.Args[0])
-	if (len(os.Args) > 1) {
+	if len(os.Args) > 1 {
 		fmt.Fprintf(w, " with arguments:\n")
 		for i, v := range os.Args[1:] {
 			fmt.Fprintf(w, "\tos.Args[%d]: %q\n", i, v)
@@ -58,6 +58,12 @@ func echo(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "\n")
 	}
 	fmt.Fprintf(w, "%s %s %s\n", r.Method, r.URL, r.Proto)
+	q := r.URL.Query()
+	if len(q) > 0 {
+		for k, v := range q {
+			fmt.Fprintf(w, "Query[%q] = %q\n", k, v)
+		}
+	}
 	for k, v := range r.Header {
 		fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
 	}
@@ -76,7 +82,7 @@ func echojoin(w http.ResponseWriter, r *http.Request) {
 	count++
 	mu.Unlock()
 	fmt.Fprintf(w, "Invoked as %q", os.Args[0])
-	if (len(os.Args) > 1) {
+	if len(os.Args) > 1 {
 		fmt.Fprintf(w, " with arguments:\n")
 		fmt.Fprint(w, strings.Join(os.Args[1:], "\n"))
 	}
@@ -95,12 +101,11 @@ func echojoin(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func echoTimed(w http.ResponseWriter, r *http.Request) {
 	startTime := time.Now()
-	echo(w,r)
+	echo(w, r)
 	fmt.Fprintf(w, "echo with loop took %f seconds\n\n", time.Since(startTime).Seconds())
-	echojoin(w,r)
+	echojoin(w, r)
 	fmt.Fprintf(w, "echo with join took %f seconds\n\n", time.Since(startTime).Seconds())
 }
 
