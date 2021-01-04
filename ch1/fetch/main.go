@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 )
@@ -15,11 +15,11 @@ func main() {
 			fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
 			panic(err)
 		}
-		b, err := ioutil.ReadAll(resp.Body)
+		count, err := io.Copy(os.Stdout, resp.Body)
 		resp.Body.Close()
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("%s", b)
+		fmt.Printf("%d bytes written\n", count)
 	}
 }
