@@ -7,12 +7,17 @@ import (
 
 type Celsius float64
 type Fahrenheit float64
+type Kelvin float64
 
 const (
-	AbsoluteZero Celsius = -273.15
-	FreezingC    Celsius = 0
-	BoilingC             = 100
+	AbsoluteZeroC Celsius = -273.15
+	FreezingC     Celsius = 0
+	BoilingC      Celsius = 100
+	AbsoluteZeroK Kelvin  = 0
+	FreezingK     Kelvin  = 273.15
+	BoilingK      Kelvin  = 373.15
 )
 
 func (c Celsius) String() string    { return fmt.Sprintf("%g&deg;C", c) }
 func (f Fahrenheit) String() string { return fmt.Sprintf("%g&deg;F", f) }
+func (k Kelvin) String() string     { return fmt.Sprintf("%g&deg;K", k) }
