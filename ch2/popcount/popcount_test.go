@@ -13,8 +13,14 @@ func BenchmarkPopCount(b *testing.B) {
 	}
 }
 
-func BenchmarkPopCountLoop(b *testing.B) {
+func BenchmarkLoop(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		PopCountLoop(testVal)
+		Loop(testVal)
+	}
+}
+
+func BenchmarkDrop(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Drop(testVal)
 	}
 }
