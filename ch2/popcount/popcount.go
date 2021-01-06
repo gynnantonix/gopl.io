@@ -38,6 +38,7 @@ func Drop(x uint64) int {
 		if x != (x&x - 1) {
 			pop++
 		}
+		x = (x&x - 1)
 	}
 	return pop
 }
