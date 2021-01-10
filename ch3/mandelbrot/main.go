@@ -12,7 +12,7 @@ import (
 
 func main() {
 	const (
-		xmin, ymin, xmax, ymax = -2, -2, +2, +2
+		xmin, ymin, xmax, ymax = -0.7, -0.7, -0.35, -0.35
 		width, height          = 4096, 4096
 	)
 
@@ -39,7 +39,7 @@ func main() {
 
 func mandelbrot(z complex128) color.Color {
 	const iterations = 255
-	const contrast = 3
+	const contrast = 8
 
 	var v complex128
 	for n := uint8(0); n < iterations; n++ {
