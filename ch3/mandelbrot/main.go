@@ -31,6 +31,8 @@ func main() {
 			// Image point (px,py) represents complex value z
 			img.Set(px, py, sumSuperSample(superPix))
 		}
+		superPix[0][py%2] = color.Black
+		superPix[1][py%2] = color.Black
 	}
 	png.Encode(os.Stdout, img) // NOTE: ignoring errors
 }
