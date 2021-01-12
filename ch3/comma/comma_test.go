@@ -16,10 +16,16 @@ func BenchmarkComma(b *testing.B) {
 }
 
 func TestComma(t *testing.T) {
-	if comma("123") != "123" {
-		t.Error("123 != 123")
+	if ret := comma("123"); ret != "123" {
+		t.Error("comma(123): " + ret)
 	}
-	if comma("1234") != "1,234" {
-		t.Error("1234 != 1,234")
+	if ret := comma("1234"); ret != "1,234" {
+		t.Error("comma(1234): " + ret)
+	}
+	if ret := comma("-1234"); ret != "-1,234" {
+		t.Error("comma(-1234): " + ret)
+	}
+	if ret := comma("-1234.5678"); ret != "-1,234.5678" {
+		t.Error("comma(-1234.5678): " + ret)
 	}
 }
